@@ -22,7 +22,7 @@ jobs:
       - name: Build image
         env:
           IMAGE_TAG: ${{ github.sha }}
-         run: |
+        run: |
           echo "-- INFO: Build image"
           docker build -t ghcr.io/mashail/cigar:${IMAGE_TAG} .
           docker push ghcr.io/mashail/cigar:${IMAGE_TAG}
