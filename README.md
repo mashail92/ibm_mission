@@ -16,9 +16,14 @@ There is on app `hello` which is just static HTML files you can do whatever you 
 ```shell
 minikube start
 ```
-2. After you are sure minikube cluster is running, run the ansible playbook
+2. Make sure `kubectl` is configured to use minikube cluster
 ```shell
-ansible-playbook -i deploy/ansible/inventories/local/hosts deploy/ansible/main.yaml
+kubectl config use-context minikube
+```
+
+3. After you are sure minikube cluster is running, run the ansible playbook
+```shell
+ansible-playbook -i deploy/ansible/hosts deploy/ansible/main.yaml
 ```
 
 ## CI/CD
