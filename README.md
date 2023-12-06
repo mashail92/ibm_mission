@@ -43,3 +43,4 @@ ansible-playbook -i deploy/ansible/hosts deploy/ansible/main.yaml --extra-vars "
 ## CI/CD
 The CI/CD pipeline is built using Github Actions, and it's triggered on every push to the main branch.
 The pipeline is defined in `.github/workflows/build_and_deploy.yaml` file. The pipeline is doing the following:
+- Build and push the images
