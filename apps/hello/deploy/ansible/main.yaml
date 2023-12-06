@@ -5,7 +5,6 @@
 
   vars:
     ansible_python_interpreter: '{{ ansible_playbook_python }}'
-    image_tag: 0c59b762fdc770093c166e57a3c1f5385f7f3254
 
   pre_tasks:
     - name: check the status of minikube.

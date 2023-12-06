@@ -11,6 +11,20 @@ This repository has the code required to achieve the IBM Mission. This repositor
 ### Build
 There is on app `hello` which is just static HTML files you can do whatever you want with it.
 
+1. Make sure you are loged in to Github Container Registry
+```shell
+docker login ghcr.io/mashail
+```
+
+2. Then build the image
+```shell
+docker build -t ghcr.io/mashail/hello:dev ./apps/hello/
+```
+3. Push it
+```shell
+docker push ghcr.io/mashail/hello:dev
+```
+
 ### Run
 1. Rune minikube
 ```shell
@@ -23,7 +37,7 @@ kubectl config use-context minikube
 
 3. After you are sure minikube cluster is running, run the ansible playbook
 ```shell
-ansible-playbook -i deploy/ansible/hosts deploy/ansible/main.yaml
+ansible-playbook -i deploy/ansible/hosts deploy/ansible/main.yaml --extra-vars "image_tag=dev"
 ```
 
 ## CI/CD

@@ -33,9 +33,26 @@ jobs:
   Deploy:
     runs-on: ubuntu-latest
     name: Deploy Apps
-    de
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - name: Check out
         uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
-      - run: pwd
+      - uses: actions-hub/kubectl@a56fcbcc47cc4bab77d91195d85f8ad657e6fb2a # v1.28.4
+        env:
+          KUBE_HOST: ip172-18-0-57-clo3cna4rl3g009d5mo0.direct.labs.play-with-k8s.com
+        with:
+          args: get pods
+      - name: Run Deployment playbook
+        uses: dawidd6/action-ansible-playbook@5d970176ea4bfd99a3f5004d48e293fe0994eda1 # v2.6.1
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        with:
+          # Required, playbook filepath
+          playbook: main.yml
+        # Optional, directory where playbooks live
+        directory: ./apps/hello/deploy/ansible
+        # Optional, additional flags to pass to ansible-playbook
+        options: |
+          --inventory hosts
+          --extra-vars "image_tag=$IMAGE_TAG"
+          --verbose
