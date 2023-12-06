@@ -23,11 +23,11 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           echo "-- INFO: Building image...."
-          docker build -t ghcr.io/mashail/hello:${IMAGE_TAG} ./apps/hello/
+          docker build -t ghcr.io/mashail92/hello:${IMAGE_TAG} ./apps/hello/
           echo "-- INFO: Image built successfully 🎉."
 
           echo "-- INFO: Pushing image..."
-          docker push ghcr.io/mashail/hello:${IMAGE_TAG}
+          docker push ghcr.io/mashail92/hello:${IMAGE_TAG}
           echo "-- INFO: Image pushed successfully 🎉."
 
   Deploy:

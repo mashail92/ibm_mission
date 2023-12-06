@@ -16,16 +16,16 @@ There is on app `hello` which is just static HTML files you can do whatever you 
 
 1. Make sure you are loged in to Github Container Registry
 ```shell
-docker login ghcr.io/mashail
+docker login ghcr.io/mashail92
 ```
 
 2. Then build the image
 ```shell
-docker build -t ghcr.io/mashail/hello:dev ./apps/hello/
+docker build -t ghcr.io/mashail92/hello:dev ./apps/hello/
 ```
 3. Push it
 ```shell
-docker push ghcr.io/mashail/hello:dev
+docker push ghcr.io/mashail92/hello:dev
 ```
 
 ### Run

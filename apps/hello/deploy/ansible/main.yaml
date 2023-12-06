@@ -74,7 +74,7 @@
                   serviceAccountName: hello
                   containers:
                     - name: hello
-                      image: ghcr.io/mashail/hello:{{image_tag}}
+                      image: ghcr.io/mashail92/hello:{{image_tag}}
                       ports:
                         - name: http
                           containerPort: 80
