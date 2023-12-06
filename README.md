@@ -1,5 +1,8 @@
 # IBM Mission
-This repository has the code required to achieve the IBM Mission. This repository contains one application which is `hello`, and it's structured in a way to add more applications to it. All applications should be deployed with Ansible on k8s environment
+This repository has the code required to achieve the IBM Mission. 
+This repository contains one application which is `hello`, and it's structured in a way to add more applications to it.
+All applications should be deployed with Ansible on k8s environment
+
 ## Pre-requisites
 - [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 - [Minikube](https://minikube.sigs.k8s.io/docs/start/)
@@ -44,3 +47,4 @@ ansible-playbook -i deploy/ansible/hosts deploy/ansible/main.yaml --extra-vars "
 The CI/CD pipeline is built using Github Actions, and it's triggered on every push to the main branch.
 The pipeline is defined in `.github/workflows/build_and_deploy.yaml` file. The pipeline is doing the following:
 - Build and push the images
+- Create Ansible Playbook to deploy to kubernetes cluster assuming k8s is accessible or the CI can access k8s cluster securly
