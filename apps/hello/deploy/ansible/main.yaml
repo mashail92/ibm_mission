@@ -1,0 +1,119 @@
+---
+- name: IBM Mission
+  hosts: ibm-mission-env
+  gather_facts: False
+
+  vars:
+    ansible_python_interpreter: '{{ ansible_playbook_python }}'
+    image_tag: 0c59b762fdc770093c166e57a3c1f5385f7f3254
+
+  pre_tasks:
+    - name: check the status of minikube.
+      command: minikube status
+      register: minikube_status
+      changed_when: false
+      ignore_errors: true
+
+    - name: start minikube if it's not running.
+      command: minikube start --vm = true
+      when: "not minikube_status.stdout or 'Running' not in minikube_status.stdout"
+
+  tasks:
+    - name: create namespace for Hello App.
+      k8s:
+        state: present
+        definition:
+            apiVersion: v1
+            kind: Namespace
+            metadata:
+              name: apps
+    - name: create a secrets for Hello App.
+      k8s:
+        state: present
+        definition:
+            apiVersion: v1
+            data:
+              .dockerconfigjson: eyJhdXRocyI6eyJnaGNyLmlvL21hc2hhaWwiOnsidXNlcm5hbWUiOiJtYXNoYWlsIiwicGFzc3dvcmQiOiJnaHBfTThFbzVYQzN0M0pxTm4yTGxmanNlcUhHRVpXRTZIME5FZWFtIiwiYXV0aCI6ImJXRnphR0ZwYkRwbmFIQmZUVGhGYnpWWVF6TjBNMHB4VG00eVRHeG1hbk5sY1VoSFJWcFhSVFpJTUU1RlpXRnQifX19
+            kind: Secret
+            metadata:
+              creationTimestamp: null
+              name: ghcr-secrets
+              namespace: apps
+            type: kubernetes.io/dockerconfigjson
+    - name: create a service account for Hello App.
+      k8s:
+        state: present
+        definition:
+            apiVersion: v1
+            kind: ServiceAccount
+            metadata:
+              name: hello
+              namespace: apps
+            imagePullSecrets:
+              - name: ghcr-secrets
+
+    - name: create a deployment for Hello App.
+      k8s:
+        state: present
+        definition:
+            apiVersion: apps/v1
+            kind: Deployment
+            metadata:
+              name: hello
+              namespace: apps
+              labels:
+                app.kubernetes.io/name: hello
+            spec:
+              selector:
+                matchLabels:
+                  app.kubernetes.io/name: hello
+              template:
+                metadata:
+                  labels:
+                    app.kubernetes.io/name: hello
+                spec:
+                  serviceAccountName: hello
+                  containers:
+                    - name: hello
+                      image: ghcr.io/mashail/hello:{{image_tag}}
+                      ports:
+                        - name: http
+                          containerPort: 80
+                          protocol: TCP
+                      readinessProbe:
+                        httpGet:
+                          path: /
+                          port: 80
+                        initialDelaySeconds: 1
+                        periodSeconds: 5
+                        timeoutSeconds: 3
+                        failureThreshold: 5
+                      livenessProbe:
+                        httpGet:
+                          path: /
+                          port: 80
+                        initialDelaySeconds: 10
+                        periodSeconds: 10
+                        timeoutSeconds: 3
+                        failureThreshold: 3
+
+    - name: create a Service for Hello App.
+      k8s:
+        state: present
+        definition:
+            apiVersion: v1
+            kind: Service
+            metadata:
+              name: hello
+              namespace: apps
+              labels:
+                app.kubernetes.io/name: hello
+            spec:
+              type: ClusterIP
+              selector:
+                app.kubernetes.io/name: hello
+              ports:
+                - name: grpc
+                  port: 80
+                  targetPort: 80
+                  protocol: TCP
